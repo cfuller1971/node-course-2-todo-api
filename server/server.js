@@ -104,6 +104,30 @@ app.delete('/todos/:id', (req, res) => {
 	});
 });
 
+// POST /users use _.pick to pull off individual properties
+// email and password
+// save
+
+// Create
+app.post('/users', (req, res) => {
+	var body = _.pick(req.body, ['email', 'password']);
+	var user = new User(body);
+
+// User - model method
+// User.findByToken (custom...doesn't exist in mongoose)
+// user - instance method
+// user.generateAuthToken
+
+
+	user.save().then(() => {
+		return user.generateAuthToken();
+	}).then((token) => {
+		res.header('x-auth', token).send(user);
+	}).catch((e) => {
+		res.status(400).send(e);
+	});
+});
+
 app.listen(port, () => {
 	console.log(`Server started on port ${port}`);
 });
